@@ -2,12 +2,13 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 
-import { AppComponent, SearchComponent } from './app.component';
-import { HelloComponent } from './hello.component';
+import { AppComponent } from './app.component';
+import { StyleDirective } from './style.directive';
+import { SearchModule } from './search/search.module';
 
 @NgModule({
-  imports: [BrowserModule, FormsModule],
-  declarations: [AppComponent, HelloComponent, SearchComponent],
+  imports: [BrowserModule, FormsModule, SearchModule],
+  declarations: [AppComponent, StyleDirective],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
