@@ -16,9 +16,11 @@ export class StyleDirective implements OnInit {
   ) {}
 
   public ngOnInit() {
-    // ng-container is rendered as a comment in the DOM
-    //nextSibling is the elment that was injected through the ng-container
-    // (the element that comes just after the comment)
+    /*
+     ng-container is rendered as a comment in the DOM (thus nodeName === '#comment'     https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeName)
+     nextSibling is the elment that was injected through the ng-container
+     (the element that comes just after the comment)
+     */
     const elementToStyle =
       this.elementRef.nativeElement.nodeName === '#comment'
         ? this.elementRef.nativeElement.nextSibling
