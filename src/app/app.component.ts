@@ -15,13 +15,13 @@ import {
   `
 })
 export class SearchComponent implements AfterContentInit {
-  @ContentChild('result', { static: false }) contentChild;
+  @ContentChild('result', { static: false }) searchResult;
 
   public constructor(private renderer: Renderer2) {}
 
   ngAfterContentInit() {
-    console.log(this.contentChild);
-    this.renderer.setStyle(this.contentChild.nativeElement, 'height', '100px');
+    console.log(this.searchResult);
+    this.renderer.setStyle(this.searchResult.nativeElement, 'height', '100px');
   }
 }
 
