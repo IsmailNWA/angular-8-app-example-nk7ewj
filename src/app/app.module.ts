@@ -8,7 +8,7 @@ import { SearchModule } from './search/search.module';
 
 @NgModule({
   imports: [BrowserModule, FormsModule, SearchModule],
-  declarations: [AppComponent, StyleDirective],
+  declarations: [AppComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

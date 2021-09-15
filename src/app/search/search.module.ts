@@ -5,7 +5,7 @@ import { StyleDirective } from '../style.directive';
 
 @NgModule({
   imports: [CommonModule],
-  declarations: [SearchComponent],
-  exports: [SearchComponent]
+  declarations: [SearchComponent, StyleDirective],
+  exports: [SearchComponent, StyleDirective]
 })
 export class SearchModule {}
