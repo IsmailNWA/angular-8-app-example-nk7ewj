@@ -1,29 +1,4 @@
-import {
-  AfterContentInit,
-  Component,
-  ContentChild,
-  OnInit,
-  Renderer2,
-  VERSION
-} from '@angular/core';
-
-@Component({
-  selector: 'search-cmp',
-  template: `
-    <p>Search</p>
-    <ng-content select=".serach-result"></ng-content>
-  `
-})
-export class SearchComponent implements AfterContentInit {
-  @ContentChild('result', { static: false }) searchResult;
-
-  public constructor(private renderer: Renderer2) {}
-
-  ngAfterContentInit() {
-    console.log(this.searchResult);
-    this.renderer.setStyle(this.searchResult.nativeElement, 'height', '100px');
-  }
-}
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'my-app',
@@ -33,6 +8,6 @@ export class SearchComponent implements AfterContentInit {
         hello
       </div>
     </search-cmp>
-  `
+  `,
 })
 export class AppComponent {}
