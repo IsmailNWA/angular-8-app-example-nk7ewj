@@ -6,6 +6,7 @@ import {
   ViewChild,
   AfterViewInit,
   ElementRef,
+  ComponentRef,
 } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
@@ -16,6 +17,13 @@ import { Product } from './model';
 import { map } from 'rxjs/operators';
 import { EditService } from './edit.service';
 import { GridComponent } from '@progress/kendo-angular-grid/dist/es2015/main';
+import {
+  OverlayRef,
+  Overlay,
+  OverlayPositionBuilder,
+} from '@angular/cdk/overlay';
+import { ComponentPortal } from '@angular/cdk/portal';
+import { ConfimationComponent } from './confimation/confimation.component';
 
 @Component({
   selector: 'my-app',
@@ -77,9 +85,11 @@ import { GridComponent } from '@progress/kendo-angular-grid/dist/es2015/main';
 })
 export class AppComponent implements OnInit, AfterViewInit {
   public view: Observable<GridDataResult>;
-  @ViewChild('kendoGrid') kendoGrid: GridComponent;
-  @ViewChild('kendoGrid', { read: ElementRef })
+  @ViewChild('kendoGrid', { static: true }) kendoGrid: GridComponent;
+  @ViewChild('kendoGrid', { static: true, read: ElementRef })
   kendoGridElement: ElementRef<HTMLElement>;
+
+  private overlayRef: OverlayRef;
 
   public gridState: State = {
     sort: [],
@@ -91,7 +101,11 @@ export class AppComponent implements OnInit, AfterViewInit {
   private editedRowIndex: number;
   private editedProduct: Product;
 
-  constructor(@Inject(EditService) editServiceFactory: any) {
+  constructor(
+    @Inject(EditService) editServiceFactory: any,
+    private overlay: Overlay,
+    private overlayPositionBuilder: OverlayPositionBuilder
+  ) {
     this.editService = editServiceFactory();
   }
 
@@ -101,6 +115,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     );
 
     this.editService.read();
+    this.overlayRef = this.overlay.create();
   }
 
   public ngAfterViewInit(): void {
@@ -142,13 +157,28 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.editedProduct = undefined;
   }
 
-  public removeHandler({ rowIndex }) {
-    console.log(rowIndex);
-    console.log(
-      this.kendoGridElement.nativeElement.querySelector(
-        'table tbody tr:nth-child(' + (rowIndex + 1) + ')'
-      )
+  public removeHandler({ rowIndex, dataItem }) {
+    const rowElement = this.kendoGridElement.nativeElement.querySelector(
+      'table tbody tr:nth-child(' + (rowIndex + 1) + ')'
     );
+
+    this.overlayRef.updatePositionStrategy(
+      this.createPositionStrategy(rowElement as any)
+    );
+
+    const confirmationPortal = new ComponentPortal(ConfimationComponent);
+    const confirmationRef: ComponentRef<ConfimationComponent> =
+      this.overlayRef.attach(confirmationPortal);
+
+    confirmationRef.instance.delete.subscribe((value: boolean) => {
+      this.overlayRef.detach();
+      if (value) {
+        this.editService.remove(dataItem);
+        return;
+      }
+    });
+
+    confirmationRef.instance.row = rowElement as HTMLElement;
   }
 
   private closeEditor(grid, rowIndex = this.editedRowIndex) {
@@ -156,5 +186,18 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.editService.resetItem(this.editedProduct);
     this.editedRowIndex = undefined;
     this.editedProduct = undefined;
+  }
+
+  private createPositionStrategy(elementRef: ElementRef) {
+    return this.overlayPositionBuilder
+      .flexibleConnectedTo(elementRef)
+      .withPositions([
+        {
+          originX: 'end',
+          originY: 'center',
+          overlayX: 'end',
+          overlayY: 'center',
+        },
+      ]);
   }
 }

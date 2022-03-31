@@ -1,0 +1,15 @@
+:host {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.container {
+  display: flex;
+  padding: 5px;
+  gap: 20px;
+  justify-content: flex-end;
+  width: 60%;
+  background: white;
+  margin: 0;
+  box-shadow: 3px 6px 3px -2px rgba(0, 0, 0, 0.25);
+}
