@@ -1,13 +1,34 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { ReactiveFormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClient, HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+
+import { GridModule } from '@progress/kendo-angular-grid';
 
 import { AppComponent } from './app.component';
-import { CdkStepperModule } from '@angular/cdk/stepper/typings/stepper-module';
+import { EditService } from './edit.service';
 
 @NgModule({
-  imports: [BrowserModule, ReactiveFormsModule, CdkStepperModule],
-  bootstrap: [AppComponent],
-  declarations: [AppComponent],
+    declarations: [
+        AppComponent
+    ],
+    imports: [
+        HttpClientModule,
+        HttpClientJsonpModule,
+        BrowserModule,
+        BrowserAnimationsModule,
+        FormsModule,
+        GridModule
+    ],
+    providers: [
+        {
+            deps: [HttpClient],
+            provide: EditService,
+            useFactory: (jsonp: HttpClient) => () => new EditService(jsonp)
+        }
+    ],
+    bootstrap: [AppComponent]
 })
 export class AppModule {}
+
